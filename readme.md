@@ -1,14 +1,14 @@
 # ECE228 Project — Baseline CNN for Speed & Steering Prediction
 
-This is our baseline model for the ECE228 course project. The goal is to predict vehicle **speed** and **steering angle** using dashcam images and CAN bus data from the [comma2k19](https://github.com/commaai/comma2k19) dataset.
+This is our baseline model for the ECE228 course project. The goal is to predict vehicle **speed** and **steering angle** using camera images and CAN bus data from the [comma2k19](https://github.com/commaai/comma2k19) dataset.
 
-We kept the architecture simple on purpose — this is meant to be the benchmark that we (hopefully) beat with better models later.
+We kept the architecture simple on purpose — this is meant to be the benchmark that we beat with better models later.
 
 ---
 
 ## What does this do?
 
-Instead of just feeding in a single frame, we stack the **previous 3 frames** together as a 9-channel input so the model can pick up on motion (e.g. the car is turning, speeding up, etc.). We also feed in the CAN readings from those same 3 timesteps.
+Instead of just feeding in a single frame, we stack the **previous 3 frames** together as a 9-channel input so the model can pick up on motion. We also feed in the CAN readings from those same 3 timesteps.
 
 The model then predicts what the speed and steering angle will be **1 second in the future**.
 
@@ -22,7 +22,7 @@ prev 3 CAN readings ─────────────┘
 
 ## Model
 
-Nothing fancy — a small CNN followed by an MLP that fuses the image features with the CAN data.
+A small CNN followed by an MLP that fuses the image features with the CAN data.
 
 **CNN:**
 - Input: 9-channel image (3 RGB frames concatenated along channel dim)
@@ -44,7 +44,7 @@ We used **comma2k19 Chunk_1**. The dataset contains dashcam footage + synced CAN
 - Image size resized to 64×64 (easier to run locally on CPU)
 - Prediction target: vehicle state 1 second ahead
 
-Download the dataset [here](https://github.com/commaai/comma2k19) and place it at:
+Download the dataset by running "dataloader.py" and place it at:
 ```
 data_utils/comma2k19_data/extracted/Chunk_1/
 ```
@@ -53,18 +53,16 @@ data_utils/comma2k19_data/extracted/Chunk_1/
 
 ## Training Setup
 
-| Setting | Value |
-|--------|-------|
-| Image size | 64×64 |
-| Batch size | 16 |
-| Epochs | 10 |
-| Learning rate | 1e-3 |
-| Optimizer | Adam |
-| LR schedule | StepLR (×0.5 every 5 epochs) |
-| Loss | Normalised MSE (divided by 30 for both outputs) |
+- Image size: 64×64
+- Batch size: 16
+- Epochs: 10
+- Learning rate: 1e-3
+- Optimizer: Adam
+- LR schedule: StepLR (*0.5 every 5 epochs)
+- Loss: Normalised MSE (divided by 30 for both outputs)
 
 We normalise the loss because speed (0–35 m/s) and steering (−30 to +30 deg) are on different scales — without this, the loss would be dominated by whichever has larger values.
-
+(The speed and steering values in comma2k19 Chunk_1 are predominantly distributed within 0–35 m/s and −30 to +30 degrees, respectively.)
 ---
 
 ## How to run
@@ -81,9 +79,8 @@ pip install torch torchvision opencv-python matplotlib tqdm
 baseline_training_local_previous3frame.ipynb
 ```
 
-If you just want to quickly check that everything runs without waiting forever, set `QUICK_TEST = True` in the Config cell — it only uses the first 5 segments and finishes in a few minutes.
+If you just want to quickly check that everything runs, set `QUICK_TEST = True`, it will only uses the first 5 segments and finishes in a few minutes.
 
-> **Windows users:** keep `NUM_WORKERS = 0` or you'll get multiprocessing errors.
 
 ---
 
@@ -114,7 +111,6 @@ The notebook prints a summary at the end:
   Speed MAE        : X.XXX m/s
   Steering MAE     : X.XXX deg
 =============================================
-  ← This is your benchmark to beat!
 ```
 
 ---
