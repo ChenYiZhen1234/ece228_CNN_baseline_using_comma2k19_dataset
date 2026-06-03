@@ -14,7 +14,7 @@ The model then predicts what the speed and steering angle will be **1 second in 
 
 ```
 prev 3 frames (64×64, stacked) ──┐
-                                  ├──► CNN + MLP ──► [speed (m/s), steer (deg)]
+                                 ├──► CNN + MLP ──► [speed (m/s), steer (deg)]
 prev 3 CAN readings ─────────────┘
 ```
 
@@ -60,8 +60,7 @@ data_utils/comma2k19_data/extracted/Chunk_1/
 - Optimizer: Adam
 - LR schedule: StepLR (*0.5 every 5 epochs)
 - Loss: Normalised MSE (divided by 30 for both outputs)
---
-We normalise the loss because speed (0–35 m/s) and steering (−30 to +30 deg) are on different scales — without this, the loss would be dominated by whichever has larger values.
+- We normalise the loss because speed (0–35 m/s) and steering (−30 to +30 deg) are on different scales — without this, the loss would be dominated by whichever has larger values.
 (The speed and steering values in comma2k19 Chunk_1 are predominantly distributed within 0–35 m/s and −30 to +30 degrees, respectively.)
 ---
 
