@@ -60,7 +60,7 @@ data_utils/comma2k19_data/extracted/Chunk_1/
 - Optimizer: Adam
 - LR schedule: StepLR (*0.5 every 5 epochs)
 - Loss: Normalised MSE (divided by 30 for both outputs)
-- We normalise the loss because speed (0–35 m/s) and steering (−30 to +30 deg) are on different scales — without this, the loss would be dominated by whichever has larger values.
+- We normalise the loss because speed (0–35 m/s) and steering (−30 to +30 deg) are on different scales.
 (The speed and steering values in comma2k19 Chunk_1 are predominantly distributed within 0–35 m/s and −30 to +30 degrees, respectively.)
 ---
 
@@ -112,15 +112,3 @@ The notebook prints a summary at the end:
 =============================================
 ```
 
----
-
-## File Structure
-
-```
-plus_CAN/
-├── baseline_training_local_previous3frame.ipynb   # main notebook
-├── data_loader.py                                  # loads comma2k19 segments
-├── baseline_best.pth                               # best model weights (generated)
-├── history.json                                    # training log (generated)
-└── baseline_training_curves.png                    # loss curves plot (generated)
-```
